@@ -12,9 +12,6 @@ function Login(props) {
 	return (
 		<div className="w-screen h-screen flex justify-center items-center">
 			<div className="bg-[#4773F455] p-5 w-full max-w-md mx-5 rounded-xl shadow-lg">
-				<h2 className="text-white text-xl mb-3">
-					<strong className="font-semibold">Login form</strong>
-				</h2>
 				<form
 					action=""
 					className="w-full flex flex-col text-gray-200"
@@ -24,9 +21,13 @@ function Login(props) {
 						// setValue("");
 					}}
 				>
-					<label htmlFor="username" className="text-xs">
-						Username :
-					</label>
+					<h2 className="text-white text-xl mb-3">
+						<label htmlFor="username" className="cursor-pointer">
+							<strong className="font-semibold">
+								Username :
+							</strong>
+						</label>
+					</h2>
 					<input
 						required
 						type="text"
@@ -39,7 +40,10 @@ function Login(props) {
 						onChange={(event) => changeInput(event)}
 					/>
 
-					<button className="bg-gradient-to-r from-yellow-500 to-orange-600 p-1 rounded-2xl outline-none" disabled={!isValid}>
+					<button
+						className="bg-gradient-to-r from-yellow-500 to-orange-600 p-1 rounded-2xl outline-none"
+						disabled={!isValid}
+					>
 						Login
 					</button>
 				</form>
