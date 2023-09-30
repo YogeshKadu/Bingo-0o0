@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Landing(props) {
+	const navigate = useNavigate();
 	const [inputValue, setValue] = useState("");
 	const [isValid, setValid] = useState(false);
 
-	const navigate = useNavigate();
+	useEffect(()=>{
+		console.log(props);
+		if(props.LocalUsername === '')
+			navigate("/",{replace:true});
+	},[])
+
 
 	const changeInput = (event) => {
 		setValue(event.target.value);
@@ -14,14 +20,13 @@ function Landing(props) {
 
 	return (
 		<div className="w-full min-h-screen flex overflow-hidden justify-center items-center flex-col relative">
-			{/* <span className="absolute w-96 h-96 bg-gradient-to-r from-lime-500 to-yellow-300 top-1/4 right-1/4 rounded-[60%_80%_70%_60%/60%_80%_70%_60%] animate-[spin_50s_alternate_linear_infinite]"></span> */}
-			{/* <span className="absolute w-[500px] h-[500px] bg-gradient-to-r from-sky-500 to-teal-500 rounded-[60%_80%_70%_60%/60%_50%_50%_80%] bottom-10  -left-3 sm:left-1/4 animate-[spin_50s_alternate-reverse_linear_infinite]"></span> */}
 			<div className="p-5 pb-0 w-full max-w-md">
-				<div className="bg-[#4773F455] p-5 rounded-lg shadow-lg text-white font-Poppins text-sm relative backdrop-blur-lg">
+				<h1 className="text-8xl sm:text-9xl font-black uppercase text-center w-full -top-16 text-white leading-9 sm:leading-[3rem] drop-shadow">Bingo</h1>
+				<div className="bg-[#4773F455] p-5 rounded-lg shadow-lg text-white font-Poppins text-sm relative backdrop-blur-sm">
 					<h3>
 						Hi there, <span className="font-Noto">👋</span>{" "}
 					</h3>
-					<big>{props.LocalUsername}</big>
+					<big className="font-semibold drop-shadow-0xl">{props.LocalUsername}</big>
 					<p className="text-xs mt-2">
 						Welcome to the Bingo Adventure,
 						<br />

@@ -7,13 +7,16 @@ export default {
 				"custom-dark": "#282C34",
 			},
 			fontFamily: {
-				"Noto":["Noto Color Emoji",'sans-serif'],
-				"Poppins": ["Poppins", 'sans-serif'],
-				"asap":["Asap",'sans-serif'],
-
+				Noto: ["Noto Color Emoji", "sans-serif"],
+				Poppins: ["Poppins", "sans-serif"],
+				asap: ["Asap", "sans-serif"],
+			},
+			dropShadow:{
+				'0xl': '0px 2px 1px rgba(0, 0, 0, 1)',
+				'3xl': '0px 5px 5px rgba(0, 0, 0, 0.8)',
 			},
 			animation: {
-				"pulsejump": "pulsejumpk 1s ease-in-out forwards",
+				pulsejump: "pulsejumpk 1s ease-in-out forwards",
 			},
 			keyframes: {
 				pulsejumpk: {
@@ -31,13 +34,6 @@ export default {
 					},
 				},
 			},
-			backgroundImage: {
-				'gradient-radial-to-tr': 'radial-gradient(115% 90% at 0% 100%, var(--tw-gradient-stops))',
-				'gradient-radial-to-tl': 'radial-gradient(115% 90% at 100% 100%, var(--tw-gradient-stops))',
-				'gradient-radial-to-br': 'radial-gradient(90% 115% at 0% 0%, var(--tw-gradient-stops))',
-				'gradient-radial-to-bl': 'radial-gradient(90% 115% at 100% 0%, var(--tw-gradient-stops))',
-				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-			}
 		},
 	},
 	plugins: [],
