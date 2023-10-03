@@ -6,10 +6,14 @@ export default {
 			colors: {
 				"custom-dark": "#282C34",
 			},
+			backgroundImage:{
+				'gradient-radial': 'radial-gradient(var(--gradient-color-stops))',
+			},
 			fontFamily: {
 				Noto: ["Noto Color Emoji", "sans-serif"],
 				Poppins: ["Poppins", "sans-serif"],
 				asap: ["Asap", "sans-serif"],
+				Gluten: ["Gluten", "cursive","sans-serif"],
 			},
 			dropShadow:{
 				'0xl': '0px 2px 1px rgba(0, 0, 0, 1)',

@@ -3,7 +3,7 @@ import Entrypoint from './Entrypoint';
 
 function App() {
   return (
-	<div className="min-h-screen w-full bg-gradient-to-b from-blue-600 to-purple-700 font-Poppins relative">
+	<div className="min-h-screen w-full bg-gradient-to-b from-blue-600 to-cyan-600 font-Poppins relative">
 		<Entrypoint />
 	</div>
   )

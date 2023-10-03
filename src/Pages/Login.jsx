@@ -10,7 +10,7 @@ function Login(props) {
 	};
 
 	return (
-		<div className="w-screen h-screen flex justify-center items-center">
+		<div className="w-screen min-h-screen flex justify-center items-center">
 			<div className="bg-[#4773F455] p-5 w-full max-w-md mx-5 rounded-xl shadow-lg">
 				<form
 					action=""

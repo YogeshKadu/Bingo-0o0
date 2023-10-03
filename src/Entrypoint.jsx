@@ -8,25 +8,58 @@ import Landing from "./Pages/Landing";
 import GameBoard from "./Pages/GameBoard";
 import punishments from "./assets/punishments";
 
+import WinImage from "./assets/Trophy.png";
+import LoseImage from "./assets/Lose.png";
 //#region Global Variable and function
 const winPatterns = [
-	// Rows
-	[0, 1, 2, 3, 4],
-	[5, 6, 7, 8, 9],
-	[10, 11, 12, 13, 14],
-	[15, 16, 17, 18, 19],
-	[20, 21, 22, 23, 24],
-
-	// Columns
-	[0, 5, 10, 15, 20],
-	[1, 6, 11, 16, 21],
-	[2, 7, 12, 17, 22],
-	[3, 8, 13, 18, 23],
-	[4, 9, 14, 19, 24],
-
-	// Diagonals
-	[0, 6, 12, 18, 24],
-	[4, 8, 12, 16, 20],
+	{
+		checked:false,
+		pattern:[0, 1, 2, 3, 4],
+	},
+	{
+		checked:false,
+		pattern:[5, 6, 7, 8, 9],
+	},
+	{
+		checked:false,
+		pattern:[10, 11, 12, 13, 14],
+	},
+	{
+		checked:false,
+		pattern:[15, 16, 17, 18, 19],
+	},
+	{
+		checked:false,
+		pattern:[20, 21, 22, 23, 24],
+	},
+	{
+		checked:false,
+		pattern:[0, 5, 10, 15, 20],
+	},
+	{
+		checked:false,
+		pattern:[1, 6, 11, 16, 21],
+	},
+	{
+		checked:false,
+		pattern:[2, 7, 12, 17, 22],
+	},
+	{
+		checked:false,
+		pattern:[3, 8, 13, 18, 23],
+	},
+	{
+		checked:false,
+		pattern:[4, 9, 14, 19, 24],
+	},
+	{
+		checked:false,
+		pattern:[0, 6, 12, 18, 24],
+	},
+	{
+		checked:false,
+		pattern:[4, 8, 12, 16, 20],
+	},
 ];
 const ToastOptions = {
 	error: {
@@ -61,6 +94,7 @@ export default function Entrypoint() {
 	const [DataConnection, setDataConnection] = useState(null);
 
 	const [Cards, setCards] = useState(shuffledNumbers());
+	const [winningPattern,setWinningPattern] = useState(winPatterns);
 	const [RecentMessage, setRecentMessage] = useState(null);
 
 	const [Buffer, setBuffer] = useState(false);
@@ -68,10 +102,11 @@ export default function Entrypoint() {
 	// const [Loading, setLoading] = useState(false);
 	const [NewRequest, setNewRequest] = useState(false);
 
+
 	useEffect(() => {
 		if (DataConnection !== null) {
 			HandlePeerConnection();
-		}else{
+		} else {
 			setCards(shuffledNumbers());
 			console.log("shuffle");
 		}
@@ -157,7 +192,7 @@ export default function Entrypoint() {
 	};
 	const HandleConnOpen = (data) => {
 		console.log(">>>HandleConnOpen: ", data);
-		setBuffer(false);
+		// setBuffer(false);
 	};
 	const HandleConnClose = (data) => {
 		console.log(">>>HandleConnClose: ", data);
@@ -177,23 +212,28 @@ export default function Entrypoint() {
 
 	//#region General Functions
 	const WinCheck = (cards) => {
+		const wpattern = [...winningPattern];
 		let matchingPatternCount = 0;
 		// console.log(cards);
-		for (const pattern of winPatterns) {
-			const isWin = pattern.every(
+		for (const Dice of wpattern) {
+			const isWin = Dice.pattern.every(
 				(index) => cards[index].checked === true
 			);
 			if (isWin) {
 				matchingPatternCount++;
+				Dice.checked = true;
 			}
 		}
+		console.log(wpattern);
+		setWinningPattern(wpattern);
 		if (matchingPatternCount >= 5) return true;
 		return false;
 	};
 
-	const EndGame = () => setTimeout(() => {
-		setEndBanner(true);
-	}, 1500);
+	const EndGame = () =>
+		setTimeout(() => {
+			setEndBanner(true);
+		}, 1500);
 
 	const CardClicked = (index) => {
 		console.log(index);
@@ -217,7 +257,7 @@ export default function Entrypoint() {
 			// 	duration: 5000,
 			// });
 			// setEndBanner(true);
-			EndGame()
+			EndGame();
 		}
 		setRecentMessage(message);
 		setCards(updatedCards);
@@ -252,11 +292,13 @@ export default function Entrypoint() {
 				{
 					toast(responce.info, ToastOptions.success);
 					navigate("board", { replace: true });
+					setBuffer(false);
 				}
 				break;
 			case 102:
 				{
 					toast(responce.info, ToastOptions.error);
+					setBuffer(false);
 				}
 				break;
 			case 200:
@@ -427,10 +469,44 @@ export default function Entrypoint() {
 						</div>
 					)}
 					{EndBanner && (
-						<div className="h-full w-full m-5 max-w-md rounded-xl flex items-end">
-							<div className="w-full p-5 bg-white shadow-lg mb-5 rounded-xl">
-
-							</div>
+						<div className="h-full w-full max-w-md flex py-5 px-5 sm:px-0">
+							{RecentMessage?.winpeer === LocalUsername && (
+								<div className="bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-sky-200 via-sky-500 to-blue-600 h-full w-full rounded-xl p-5 flex flex-col relative">
+									<h1 className="text-white text-center font-semibold text-2xl mt-5 mb-2">
+										Congratulations!
+									</h1>
+									<img
+										src={WinImage}
+										alt="winnign indicator"
+										className="w-full max-w-xs aspect-square mx-auto absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
+									/>
+									<p className="mx-auto mt-auto text-white text-center px-5 md:px-12 text-sm z-10">
+										Lorem ipsum dolor sit, amet consectetur
+										adipisicing elit. Voluptatum, quod?
+									</p>
+									<button className="bg-lime-400 py-2 text-blue-800 font-semibold rounded-full w-full mt-5 mb-2 mx-auto max-w-[300px] border-b-4 border-b-lime-500 z-10 active:border-b-0 active:translate-y-1 transition-all">
+										Go Back
+									</button>
+								</div>
+							)}
+							{RecentMessage?.winpeer !== LocalUsername && (
+								<div className="bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-400 via-blue-800 to-blue-950 h-full w-full rounded-xl p-5 flex flex-col relative">
+									<h1 className="text-white text-center font-semibold text-2xl mt-5 mb-2">
+										Game Over!
+									</h1>
+									<img
+										src={LoseImage}
+										alt="winnign indicator"
+										className="w-full max-w-xs aspect-square mx-auto mt-7"
+									/>
+									<p className="mx-auto mt-auto text-white text-center px-5 md:px-12 text-sm z-10">
+										{ReceiveMessage.info}
+									</p>
+									<button className="bg-orange-500 py-2 text-white font-semibold rounded-full w-full mt-5 mb-2 mx-auto max-w-[300px] border-b-4 border-b-orange-700 z-10 active:border-b-0 active:translate-y-1 transition-all">
+										Go Back
+									</button>
+								</div>
+							)}
 						</div>
 					)}
 				</div>
