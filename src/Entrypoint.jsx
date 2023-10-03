@@ -13,52 +13,52 @@ import LoseImage from "./assets/Lose.png";
 //#region Global Variable and function
 const winPatterns = [
 	{
-		checked:false,
-		pattern:[0, 1, 2, 3, 4],
+		checked: false,
+		pattern: [0, 1, 2, 3, 4],
 	},
 	{
-		checked:false,
-		pattern:[5, 6, 7, 8, 9],
+		checked: false,
+		pattern: [5, 6, 7, 8, 9],
 	},
 	{
-		checked:false,
-		pattern:[10, 11, 12, 13, 14],
+		checked: false,
+		pattern: [10, 11, 12, 13, 14],
 	},
 	{
-		checked:false,
-		pattern:[15, 16, 17, 18, 19],
+		checked: false,
+		pattern: [15, 16, 17, 18, 19],
 	},
 	{
-		checked:false,
-		pattern:[20, 21, 22, 23, 24],
+		checked: false,
+		pattern: [20, 21, 22, 23, 24],
 	},
 	{
-		checked:false,
-		pattern:[0, 5, 10, 15, 20],
+		checked: false,
+		pattern: [0, 5, 10, 15, 20],
 	},
 	{
-		checked:false,
-		pattern:[1, 6, 11, 16, 21],
+		checked: false,
+		pattern: [1, 6, 11, 16, 21],
 	},
 	{
-		checked:false,
-		pattern:[2, 7, 12, 17, 22],
+		checked: false,
+		pattern: [2, 7, 12, 17, 22],
 	},
 	{
-		checked:false,
-		pattern:[3, 8, 13, 18, 23],
+		checked: false,
+		pattern: [3, 8, 13, 18, 23],
 	},
 	{
-		checked:false,
-		pattern:[4, 9, 14, 19, 24],
+		checked: false,
+		pattern: [4, 9, 14, 19, 24],
 	},
 	{
-		checked:false,
-		pattern:[0, 6, 12, 18, 24],
+		checked: false,
+		pattern: [0, 6, 12, 18, 24],
 	},
 	{
-		checked:false,
-		pattern:[4, 8, 12, 16, 20],
+		checked: false,
+		pattern: [4, 8, 12, 16, 20],
 	},
 ];
 const ToastOptions = {
@@ -94,14 +94,13 @@ export default function Entrypoint() {
 	const [DataConnection, setDataConnection] = useState(null);
 
 	const [Cards, setCards] = useState(shuffledNumbers());
-	const [winningPattern,setWinningPattern] = useState(winPatterns);
+	const [winningPattern, setWinningPattern] = useState(winPatterns);
 	const [RecentMessage, setRecentMessage] = useState(null);
 
 	const [Buffer, setBuffer] = useState(false);
 	const [EndBanner, setEndBanner] = useState(false);
 	// const [Loading, setLoading] = useState(false);
 	const [NewRequest, setNewRequest] = useState(false);
-
 
 	useEffect(() => {
 		if (DataConnection !== null) {
@@ -112,7 +111,7 @@ export default function Entrypoint() {
 		}
 	}, [DataConnection]);
 	useEffect(() => {
-		console.log(RecentMessage);
+		console.log("Resent -> ",RecentMessage);
 	}, [RecentMessage]);
 
 	const ConnectToServer = (username) => {
@@ -159,6 +158,7 @@ export default function Entrypoint() {
 		navigate("/landing", { replace: true });
 
 		setBuffer(false);
+		setEndBanner(false);
 	};
 	const HandlePeerError = (error) => {
 		switch (error.type) {
@@ -198,6 +198,9 @@ export default function Entrypoint() {
 		console.log(">>>HandleConnClose: ", data);
 		setDataConnection(null);
 		navigate("landing");
+
+
+		setEndBanner(false);
 	};
 	const HandleConnError = (error) => {
 		console.log(">>>HandleConnError: ", error);
@@ -207,6 +210,7 @@ export default function Entrypoint() {
 	const HandleConnDisconnected = (data) => {
 		console.log(data);
 		setBuffer(false);
+		setRecentMessage(null);
 	};
 	//#endregion
 
@@ -286,11 +290,13 @@ export default function Entrypoint() {
 	const SendMessage = (message) => {
 		DataConnection.send(JSON.stringify(message));
 	};
+
 	const ReceiveMessage = (responce) => {
 		switch (responce.status) {
 			case 101:
 				{
 					toast(responce.info, ToastOptions.success);
+					setRecentMessage(responce);
 					navigate("board", { replace: true });
 					setBuffer(false);
 				}
@@ -336,21 +342,7 @@ export default function Entrypoint() {
 				break;
 			case 201:
 				{
-					// if (responce.winpeer === LocalUsername) {
-					// 	toast("Congrats you won this dual!", {
-					// 		...ToastOptions.success,
-					// 		icon: "🤩",
-					// 		duration: 5000,
-					// 	});
-					// } else {
-					// 	toast("You lost this dual!", {
-					// 		...ToastOptions.error,
-					// 		icon: "😟",
-					// 		duration: 5000,
-					// 	});
-					// }
 					setRecentMessage(responce);
-					// setEndBanner(true);
 					EndGame();
 				}
 				break;
@@ -364,6 +356,15 @@ export default function Entrypoint() {
 		}
 		// setRecentMessage(responce);
 	};
+
+
+	const ResetGame = () => {
+		setEndBanner(false);
+		setRecentMessage(null);
+		setCards(shuffledNumbers());
+		DataConnection.close();
+		navigate("/landing");
+	}
 	//#endregion
 	return (
 		<div className="w-full flex flex-col min-h-screen font-asap">
@@ -411,8 +412,7 @@ export default function Entrypoint() {
 										onClick={() => {
 											const message = {
 												status: 101,
-												peer:
-													Math.random > 0.5
+												peer: (Math.random > 0.5)
 														? LocalUsername
 														: DataConnection.peer,
 												content: "",
@@ -471,7 +471,7 @@ export default function Entrypoint() {
 					{EndBanner && (
 						<div className="h-full w-full max-w-md flex py-5 px-5 sm:px-0">
 							{RecentMessage?.winpeer === LocalUsername && (
-								<div className="bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-sky-200 via-sky-500 to-blue-600 h-full w-full rounded-xl p-5 flex flex-col relative">
+								<div className="bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-sky-200 via-sky-600 to-blue-900 h-full w-full rounded-xl p-5 flex flex-col relative">
 									<h1 className="text-white text-center font-semibold text-2xl mt-5 mb-2">
 										Congratulations!
 									</h1>
@@ -480,29 +480,30 @@ export default function Entrypoint() {
 										alt="winnign indicator"
 										className="w-full max-w-xs aspect-square mx-auto absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
 									/>
-									<p className="mx-auto mt-auto text-white text-center px-5 md:px-12 text-sm z-10">
-										Lorem ipsum dolor sit, amet consectetur
-										adipisicing elit. Voluptatum, quod?
-									</p>
-									<button className="bg-lime-400 py-2 text-blue-800 font-semibold rounded-full w-full mt-5 mb-2 mx-auto max-w-[300px] border-b-4 border-b-lime-500 z-10 active:border-b-0 active:translate-y-1 transition-all">
+									<div className="mx-auto mt-auto text-white text-center px-5 md:px-12 text-sm z-10">
+										<p>{DataConnection.peer} has below punishment</p>
+										<p>{RecentMessage.info}</p>
+									</div>
+									<button className="bg-lime-400 py-2 text-blue-800 font-semibold rounded-full w-full mt-5 mb-2 mx-auto max-w-[300px] border-b-4 border-b-lime-500 z-10 active:border-b-0 active:translate-y-1 transition-all" onClick={() => ResetGame()}>
 										Go Back
 									</button>
 								</div>
 							)}
 							{RecentMessage?.winpeer !== LocalUsername && (
 								<div className="bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-400 via-blue-800 to-blue-950 h-full w-full rounded-xl p-5 flex flex-col relative">
-									<h1 className="text-white text-center font-semibold text-2xl mt-5 mb-2">
-										Game Over!
+									<h1 className="text-white text-center font-semibold text-4xl mt-5 mb-2">
+										Game Lost!
 									</h1>
 									<img
 										src={LoseImage}
 										alt="winnign indicator"
 										className="w-full max-w-xs aspect-square mx-auto mt-7"
 									/>
-									<p className="mx-auto mt-auto text-white text-center px-5 md:px-12 text-sm z-10">
-										{ReceiveMessage.info}
-									</p>
-									<button className="bg-orange-500 py-2 text-white font-semibold rounded-full w-full mt-5 mb-2 mx-auto max-w-[300px] border-b-4 border-b-orange-700 z-10 active:border-b-0 active:translate-y-1 transition-all">
+									<div className="mx-auto mt-auto text-white text-center px-5 md:px-12 text-sm z-10">
+										<b>Punishment</b>
+										<p>{RecentMessage.info}</p>
+									</div>
+									<button className="bg-orange-500 py-2 text-white font-semibold rounded-full w-full mt-5 mb-2 mx-auto max-w-[300px] border-b-4 border-b-orange-700 z-10 active:border-b-0 active:translate-y-1 transition-all" onClick={() => ResetGame()}>
 										Go Back
 									</button>
 								</div>

@@ -5,7 +5,6 @@ export default [
     "Talk to a random object as if it's your best friend for 5 minutes",
     "Dance like nobody's watching in a crowded area",
     "Post an embarrassing picture on your social media with a funny caption",
-    
     "Do 20 squats",
     "Go for a 10-minute brisk walk",
     "Hold a plank for 1 minute",

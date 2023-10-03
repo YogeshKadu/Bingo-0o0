@@ -5,13 +5,13 @@ import { useNavigate } from "react-router-dom";
 function GameBoard(props) {
 	const navigate = useNavigate();
 	useEffect(() => {
-		console.log(props);
 		if (
 			props.LocalUsername === "" ||
 			props.LocalUsername === undefined ||
 			props.FriendUsername === undefined
 		)
 			navigate("/");
+		console.log(props.RecentMessage.peer);
 	}, []);
 
 	return (
@@ -21,15 +21,40 @@ function GameBoard(props) {
 			{props.FriendUsername !== undefined && (
 				<div className="m-5 p">
 					<div className="text-center relative flex gap-2 font-semibold text-white justify-evenly">
-						<div className=" z-20 flex items-center justify-center flex-col gap-1">
+						<div className=" flex items-center justify-center flex-col gap-1">
+							<span className="bg-white rounded-full relative w-14 h-14 grid place-content-center mt-2 font-Gluten text-pink-500 font-black uppercase text-4xl">
+								{props.RecentMessage?.peer ===
+									props.LocalUsername && (
+									<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-500 z-0"></span>
+								)}
+								<span>
+									{props.LocalUsername[0]}
+								</span>
+							</span>
 							<p className="text-xs">{props.LocalUsername}</p>
 						</div>
-						<div className="z-20 flex items-center justify-center flex-col gap-1">
+						<div className="flex items-center justify-center flex-col gap-1">
+							<span className="bg-white rounded-full relative w-14 h-14 grid place-content-center mt-2 font-Gluten text-blue-700 font-black uppercase text-4xl">
+								{props.RecentMessage?.peer ===
+									props.FriendUsername && (
+									<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-500 z-0"></span>
+								)}
+								<span>
+									{props.FriendUsername[0]}
+								</span>
+							</span>
 							<p className="text-xs">{props.FriendUsername}</p>
 						</div>
 					</div>
 				</div>
 			)}
+
+			{
+				props.RecentMessage?.status > 150 &&
+				<div className="p-10 py-3 text-white">
+					Recent selection: <strong className="inline-block w-8 h-8 p-1 text-center rounded-full bg-pink-500">{props.RecentMessage?.content}</strong>
+				</div>
+			}
 
 			<div className="w-full px-5">
 				<div className="p-5 bg-[#4773F455] rounded-2xl shadow-md">

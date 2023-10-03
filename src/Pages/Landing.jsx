@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+const soloMessage= [
+	"You're a true solo gamer, a pioneer of self-entertainment!",
+	"Sometimes it's just you against the world. And today, it's just you.",
+	"When no one else is playing with you, play with yourself",
+	"Why so sad bro.!",
+	"Let's not go there.",
+];
 
 function Landing(props) {
 	const navigate = useNavigate();
@@ -17,6 +25,8 @@ function Landing(props) {
 		setValue(event.target.value);
 		setValid(event.target.validity.valid);
 	};
+
+	const GetSillyMessage = () => soloMessage[Math.floor(Math.random() * soloMessage.length)];
 
 	return (
 		<div className="w-full min-h-screen flex overflow-hidden justify-center items-center flex-col relative">
@@ -42,7 +52,12 @@ function Landing(props) {
 						onSubmit={(event) => {
 							event.preventDefault();
 							console.log("connect");
-							props.ConnectToClient(inputValue);
+							if(inputValue === props.LocalUsername){
+								console.log(GetSillyMessage());
+								toast(GetSillyMessage(),{icon:'😣',className:'font-Nono',duration: 5000})
+							}else{
+								props.ConnectToClient(inputValue);
+							}
 						}}
 					>
 						<h2 className="text-white text-xl mb-2">
